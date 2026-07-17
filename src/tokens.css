@@ -1,0 +1,84 @@
+/**
+ * Limoo design tokens — edit this file to swap the entire palette.
+ * Components must only use Tailwind classes mapped from these variables.
+ */
+:root {
+  /* Brand — neon lime from signup designs */
+  --limoo-primary: #b8ff00;
+  --limoo-primary-hover: #a3e600;
+  --limoo-primary-foreground: #111111;
+  --limoo-primary-soft: #eaffb8;
+
+  /* Auth CTA (black pill buttons in signup) */
+  --limoo-cta: #111111;
+  --limoo-cta-foreground: #ffffff;
+  --limoo-input: #f3f3f3;
+  --limoo-radius-sheet: 40px;
+  --limoo-radius-btn: 18px;
+
+  /* Accents (commerce states) */
+  --limoo-accent-staged: #9333ea;
+  --limoo-accent-staged-soft: #f3e8ff;
+  --limoo-accent-confirmed: #16a34a;
+  --limoo-accent-confirmed-soft: #dcfce7;
+
+  /* Surfaces */
+  --limoo-bg: #f4f4f5;
+  --limoo-surface: #ffffff;
+  --limoo-surface-secondary: #f4f4f5;
+  --limoo-surface-elevated: #ffffff;
+  --limoo-overlay: rgb(0 0 0 / 0.45);
+
+  /* Text */
+  --limoo-text: #18181b;
+  --limoo-text-secondary: #52525b;
+  --limoo-text-muted: #a1a1aa;
+  --limoo-text-inverse: #ffffff;
+
+  /* Borders & dividers */
+  --limoo-border: #e4e4e7;
+  --limoo-border-strong: #d4d4d8;
+
+  /* Chat */
+  --limoo-bubble-buyer: #d9f99d;
+  --limoo-bubble-seller: #ffffff;
+  --limoo-system: #e4e4e7;
+
+  /* Nav / chrome */
+  --limoo-nav: #ffffff;
+  --limoo-nav-active: #6bb800;
+  --limoo-nav-inactive: #a1a1aa;
+  --limoo-nav-float: rgb(255 255 255 / 0.1);
+  --limoo-nav-float-icon: #ffffff;
+  --limoo-glass: rgb(255 255 255 / 0.1);
+  --limoo-glass-strong: rgb(255 255 255 / 0.1);
+  --limoo-reel-bg: #0a0a0a;
+  --limoo-reel-scrim: #000000;
+  --limoo-like: #ff3b5c;
+
+  /* Radii */
+  --limoo-radius-sm: 8px;
+  --limoo-radius-md: 12px;
+  --limoo-radius-card: 16px;
+  --limoo-radius-lg: 20px;
+  --limoo-radius-pill: 9999px;
+  --limoo-radius-bubble: 18px;
+
+  /* Shadows */
+  --limoo-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.06);
+  --limoo-shadow-md: 0 4px 14px rgb(0 0 0 / 0.08);
+  --limoo-shadow-lg: 0 8px 24px rgb(0 0 0 / 0.1);
+
+  /* Type scale */
+  --limoo-text-xs: 0.75rem;
+  --limoo-text-sm: 0.8125rem;
+  --limoo-text-base: 0.9375rem;
+  --limoo-text-md: 1rem;
+  --limoo-text-lg: 1.125rem;
+  --limoo-text-xl: 1.25rem;
+  --limoo-text-2xl: 1.5rem;
+
+  /* Phone frame (desktop mockup chrome only) */
+  --limoo-frame-bg: #e4e4e7;
+  --limoo-frame-bezel: #27272a;
+}

@@ -1,0 +1,123 @@
+@import "tailwindcss";
+@import "./fonts.css";
+@import "./tokens.css";
+
+@theme inline {
+  --font-sans: "Yekan Bakh", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: var(--limoo-primary);
+  --color-primary-hover: var(--limoo-primary-hover);
+  --color-primary-foreground: var(--limoo-primary-foreground);
+  --color-primary-soft: var(--limoo-primary-soft);
+
+  --color-cta: var(--limoo-cta);
+  --color-cta-foreground: var(--limoo-cta-foreground);
+  --color-input: var(--limoo-input);
+
+  --radius-sheet: var(--limoo-radius-sheet);
+  --radius-btn: var(--limoo-radius-btn);
+
+  --color-accent-staged: var(--limoo-accent-staged);
+  --color-accent-staged-soft: var(--limoo-accent-staged-soft);
+  --color-accent-confirmed: var(--limoo-accent-confirmed);
+  --color-accent-confirmed-soft: var(--limoo-accent-confirmed-soft);
+
+  --color-bg: var(--limoo-bg);
+  --color-surface: var(--limoo-surface);
+  --color-surface-secondary: var(--limoo-surface-secondary);
+  --color-surface-elevated: var(--limoo-surface-elevated);
+  --color-overlay: var(--limoo-overlay);
+
+  --color-text: var(--limoo-text);
+  --color-text-secondary: var(--limoo-text-secondary);
+  --color-text-muted: var(--limoo-text-muted);
+  --color-text-inverse: var(--limoo-text-inverse);
+
+  --color-border: var(--limoo-border);
+  --color-border-strong: var(--limoo-border-strong);
+
+  --color-bubble-buyer: var(--limoo-bubble-buyer);
+  --color-bubble-seller: var(--limoo-bubble-seller);
+  --color-system: var(--limoo-system);
+
+  --color-nav: var(--limoo-nav);
+  --color-nav-active: var(--limoo-nav-active);
+  --color-nav-inactive: var(--limoo-nav-inactive);
+  --color-nav-float: var(--limoo-nav-float);
+  --color-nav-float-icon: var(--limoo-nav-float-icon);
+  --color-glass: var(--limoo-glass);
+  --color-glass-strong: var(--limoo-glass-strong);
+  --color-reel-bg: var(--limoo-reel-bg);
+  --color-reel-scrim: var(--limoo-reel-scrim);
+  --color-like: var(--limoo-like);
+
+  --color-frame-bg: var(--limoo-frame-bg);
+  --color-frame-bezel: var(--limoo-frame-bezel);
+
+  --radius-sm: var(--limoo-radius-sm);
+  --radius-md: var(--limoo-radius-md);
+  --radius-card: var(--limoo-radius-card);
+  --radius-lg: var(--limoo-radius-lg);
+  --radius-pill: var(--limoo-radius-pill);
+  --radius-bubble: var(--limoo-radius-bubble);
+
+  --shadow-sm: var(--limoo-shadow-sm);
+  --shadow-md: var(--limoo-shadow-md);
+  --shadow-lg: var(--limoo-shadow-lg);
+
+  --text-xs: var(--limoo-text-xs);
+  --text-sm: var(--limoo-text-sm);
+  --text-base: var(--limoo-text-base);
+  --text-md: var(--limoo-text-md);
+  --text-lg: var(--limoo-text-lg);
+  --text-xl: var(--limoo-text-xl);
+  --text-2xl: var(--limoo-text-2xl);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--limoo-frame-bg);
+  color: var(--limoo-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbars inside the phone frame while keeping scroll */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Snap scroll for PDP images */
+.snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+}
+.snap-center {
+  scroll-snap-align: center;
+}
+
+/* Floating nav icons — PNG/SVG with transparent bg; alpha drives the mask */
+.nav-icon-mask {
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
