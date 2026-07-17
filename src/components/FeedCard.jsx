@@ -19,6 +19,7 @@ export default function FeedCard({ item }) {
         <img
           src={product.images[0]}
           alt={product.name}
+          referrerPolicy="no-referrer"
           className="size-full object-cover"
           loading="lazy"
         />

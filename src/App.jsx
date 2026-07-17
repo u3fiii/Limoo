@@ -6,12 +6,14 @@ import { ChatProvider } from './context/ChatContext'
 import ChatList from './screens/ChatList'
 import ChatThread from './screens/ChatThread'
 import ExploreFeed from './screens/ExploreFeed'
+import ExploreSearch from './screens/ExploreSearch'
 import NameEntry from './screens/auth/NameEntry'
 import Notifications from './screens/Notifications'
 import OtpVerify from './screens/auth/OtpVerify'
 import PhoneEntry from './screens/auth/PhoneEntry'
-import PlaceholderScreen from './screens/PlaceholderScreen'
+import Profile from './screens/Profile'
 import ProductDetail from './screens/ProductDetail'
+import SellerShop from './screens/SellerShop'
 
 function RequireAuth({ children }) {
   const { isAuthenticated } = useAuth()
@@ -40,11 +42,19 @@ function AppRoutes() {
       >
         <Route path="/" element={<ExploreFeed />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/search" element={<PlaceholderScreen title="جستجو" subtitle="به زودی" />} />
+        <Route path="/search" element={<ExploreSearch />} />
         <Route path="/chats" element={<ChatList />} />
-        <Route path="/profile" element={<PlaceholderScreen title="پروفایل" subtitle="به زودی" />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
 
+      <Route
+        path="/shop/:sellerId"
+        element={
+          <RequireAuth>
+            <SellerShop />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/product/:productId"
         element={

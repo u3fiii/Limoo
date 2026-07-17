@@ -109,27 +109,29 @@ export default function Notifications() {
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(2rem+env(safe-area-inset-top))]">
-      <header className="shrink-0 px-4 pb-3 pt-1">
-        <h1 className="text-xl font-bold text-text">فعالیت‌ها</h1>
+      <header className="shrink-0 pb-3 pt-1">
+        <h1 className="px-4 text-xl font-bold text-text">فعالیت‌ها</h1>
 
-        <div className="mt-3 flex gap-2 overflow-x-auto no-scrollbar">
-          {activityFilters.map((tab) => {
-            const active = filter === tab.id
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setFilter(tab.id)}
-                className={`shrink-0 rounded-pill px-3.5 py-1.5 text-sm font-medium transition ${
-                  active
-                    ? 'bg-cta text-cta-foreground'
-                    : 'border border-border bg-surface text-text'
-                }`}
-              >
-                {tab.label}
-              </button>
-            )
-          })}
+        <div className="mt-3 overflow-x-auto no-scrollbar">
+          <div className="flex w-max min-w-full gap-2 px-4">
+            {activityFilters.map((tab) => {
+              const active = filter === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setFilter(tab.id)}
+                  className={`shrink-0 rounded-pill px-3.5 py-1.5 text-sm font-medium transition ${
+                    active
+                      ? 'bg-cta text-cta-foreground'
+                      : 'border border-border bg-surface text-text'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
         </div>
       </header>
 

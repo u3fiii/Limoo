@@ -3,6 +3,7 @@
  * state: 'staged' | 'confirmed'
  */
 import { formatPrice } from '../utils/format'
+import { productImageUrl } from '../data/products'
 import { IconCheck } from './Icons'
 
 export default function ProductCard({
@@ -27,8 +28,9 @@ export default function ProductCard({
     >
       <div className="flex gap-3 p-3">
         <img
-          src={product.images[0]}
+          src={productImageUrl(product.images[0], 'thumb')}
           alt={product.name}
+          referrerPolicy="no-referrer"
           className="size-16 shrink-0 rounded-md object-cover bg-surface-secondary"
         />
         <div className="min-w-0 flex-1">
@@ -58,7 +60,7 @@ export default function ProductCard({
             value={note ?? ''}
             onChange={(e) => onNoteChange?.(e.target.value)}
             placeholder="یادداشت اختیاری برای فروشنده…"
-            className="w-full rounded-md border border-border bg-surface-secondary px-3 py-2 text-sm text-text outline-none placeholder:text-text-muted focus:border-accent-staged"
+            className="w-full rounded-md border-2 border-border bg-surface-secondary px-3 py-2 text-sm text-text outline-none placeholder:text-text-muted"
           />
           <div className="flex gap-2">
             {onDismiss && (

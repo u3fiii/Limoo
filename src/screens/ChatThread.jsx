@@ -147,7 +147,7 @@ export default function ChatThread() {
           >
             <IconAttach className="size-5" />
           </button>
-          <div className="flex min-h-11 flex-1 items-center rounded-pill border border-border bg-surface-secondary px-1">
+          <div className="flex min-h-11 flex-1 items-center rounded-pill border-2 border-border bg-surface-secondary px-1 focus-within:border-cta">
             <input
               type="text"
               value={text}
@@ -156,7 +156,7 @@ export default function ChatThread() {
                 if (e.key === 'Enter') handleSendText()
               }}
               placeholder="پیام بنویس…"
-              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-text outline-none placeholder:text-text-muted"
+              className="limoo-input-plain min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm text-text outline-none placeholder:text-text-muted"
             />
             <button
               type="button"

@@ -52,16 +52,30 @@ export default function FloatingNav() {
               end={end}
               aria-label={label}
               className={({ isActive }) =>
-                `flex h-11 w-full items-center justify-center rounded-pill transition-all duration-200 ${
+                `relative flex h-11 w-full items-center justify-center rounded-pill ${
                   isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : immersive
-                      ? 'text-nav-float-icon active:bg-white/10'
-                      : 'text-text active:bg-surface-secondary'
+                    ? 'text-primary-foreground'
+                    : `transition-colors duration-200 ${
+                        immersive
+                          ? 'text-nav-float-icon active:bg-white/10'
+                          : 'text-text active:bg-surface-secondary'
+                      }`
                 }`
               }
             >
-              <NavIcon src={icon} />
+              {({ isActive }) => (
+                <>
+                  {isActive ? (
+                    <span
+                      aria-hidden
+                      className="nav-pill-in absolute inset-0 rounded-pill bg-primary"
+                    />
+                  ) : null}
+                  <span className="relative z-10">
+                    <NavIcon src={icon} />
+                  </span>
+                </>
+              )}
             </NavLink>
           </li>
         ))}

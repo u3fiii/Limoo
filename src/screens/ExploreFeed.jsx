@@ -5,6 +5,7 @@ import { reels } from '../data/feed'
 const SNAP_MS = 160
 const SWIPE_THRESHOLD = 48
 const WHEEL_COOLDOWN_MS = 180
+const AXIS_LOCK_PX = 10
 
 function easeOutCubic(t) {
   return 1 - (1 - t) ** 3
@@ -13,17 +14,21 @@ function easeOutCubic(t) {
 /**
  * Infinite reel loop:
  * [lastClone, ...reels, firstClone]
- * Start on the first real reel; when a clone is reached, jump to the matching real slide.
+ * Vertical swipe → next/prev reel (category)
+ * Horizontal swipe → next/prev related clip within the active reel
  */
 export default function ExploreFeed() {
   const scrollerRef = useRef(null)
+  const slideRefs = useRef({})
   const indexRef = useRef(1)
   const animatingRef = useRef(false)
   const jumpingRef = useRef(false)
+  const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const touchStartScroll = useRef(0)
+  const clipTouchStartScroll = useRef(0)
   const touchSkipRef = useRef(false)
-  const [activeSlideKey, setActiveSlideKey] = useState(`real-${reels[0]?.id}`)
+  const gestureAxisRef = useRef(null)
   const [muted, setMuted] = useState(true)
 
   const slides = useMemo(() => {
@@ -40,6 +45,12 @@ export default function ExploreFeed() {
       { ...first, slideKey: `clone-end-${first.id}`, logicalIndex: 0 },
     ]
   }, [])
+
+  const getActiveSlideRef = useCallback(() => {
+    const slide = slides[indexRef.current]
+    if (!slide) return null
+    return slideRefs.current[slide.slideKey] ?? null
+  }, [slides])
 
   const resolveClones = useCallback(
     (index) => {
@@ -60,8 +71,6 @@ export default function ExploreFeed() {
       animatingRef.current = false
       el.scrollTop = index * height
       indexRef.current = index
-      const slide = slides[index]
-      if (slide) setActiveSlideKey(slide.slideKey)
       window.setTimeout(() => {
         jumpingRef.current = false
       }, 40)
@@ -85,15 +94,11 @@ export default function ExploreFeed() {
       const dist = target - start
       if (Math.abs(dist) < 1) {
         indexRef.current = index
-        const slide = slides[index]
-        if (slide) setActiveSlideKey(slide.slideKey)
         return
       }
 
       animatingRef.current = true
       indexRef.current = index
-      const slide = slides[index]
-      if (slide) setActiveSlideKey(slide.slideKey)
 
       const t0 = performance.now()
 
@@ -136,33 +141,108 @@ export default function ExploreFeed() {
       if (animatingRef.current || jumpingRef.current) return
       const now = performance.now()
       if (now < wheelLockUntil) return
+
+      const slideRef = getActiveSlideRef()
+      const clipState = slideRef?.getClipState?.()
+
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) >= 8) {
+        if (e.deltaX > 0) {
+          if (clipState && !clipState.atEnd && slideRef.scrollClipBy(1)) {
+            wheelLockUntil = now + WHEEL_COOLDOWN_MS
+          }
+        } else if (clipState && !clipState.atStart && slideRef.scrollClipBy(-1)) {
+          wheelLockUntil = now + WHEEL_COOLDOWN_MS
+        }
+        return
+      }
+
       if (Math.abs(e.deltaY) < 8) return
+
       wheelLockUntil = now + WHEEL_COOLDOWN_MS
-      animateToIndex(indexRef.current + (e.deltaY > 0 ? 1 : -1))
+      if (e.deltaY > 0) {
+        animateToIndex(indexRef.current + 1)
+      } else {
+        animateToIndex(indexRef.current - 1)
+      }
     }
 
     const onTouchStart = (e) => {
       if (animatingRef.current) return
       touchSkipRef.current = Boolean(e.target.closest('[data-reel-pan]'))
+      touchStartX.current = e.touches[0].clientX
       touchStartY.current = e.touches[0].clientY
       touchStartScroll.current = el.scrollTop
+      gestureAxisRef.current = null
+
+      const slideRef = getActiveSlideRef()
+      clipTouchStartScroll.current = slideRef?.getClipScrollLeft?.() ?? 0
     }
 
     const onTouchMove = (e) => {
       if (touchSkipRef.current) return
+
+      const dx = e.touches[0].clientX - touchStartX.current
+      const dy = e.touches[0].clientY - touchStartY.current
+
+      if (!gestureAxisRef.current && (Math.abs(dx) > AXIS_LOCK_PX || Math.abs(dy) > AXIS_LOCK_PX)) {
+        gestureAxisRef.current = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'
+      }
+
+      const slideRef = getActiveSlideRef()
+      const clipState = slideRef?.getClipState?.()
+
+      if (
+        gestureAxisRef.current === 'x'
+        && slideRef?.hasMultipleClips?.()
+        && clipState
+      ) {
+        if (dx < 0 && !clipState.atEnd) {
+          e.preventDefault()
+          slideRef.setClipScroll(clipTouchStartScroll.current - dx)
+          return
+        }
+        if (dx > 0 && !clipState.atStart) {
+          e.preventDefault()
+          slideRef.setClipScroll(clipTouchStartScroll.current - dx)
+          return
+        }
+      }
+
+      if (gestureAxisRef.current !== 'y') return
+
       if (animatingRef.current || jumpingRef.current) {
         e.preventDefault()
         return
       }
-      const dy = e.touches[0].clientY - touchStartY.current
       if (Math.abs(dy) > 6) e.preventDefault()
       el.scrollTop = touchStartScroll.current - dy
     }
 
     const onTouchEnd = (e) => {
       if (touchSkipRef.current || animatingRef.current || jumpingRef.current) return
+
+      const endX = e.changedTouches[0]?.clientX ?? touchStartX.current
       const endY = e.changedTouches[0]?.clientY ?? touchStartY.current
+      const dx = endX - touchStartX.current
       const dy = endY - touchStartY.current
+      const slideRef = getActiveSlideRef()
+      const clipState = slideRef?.getClipState?.()
+
+      if (gestureAxisRef.current === 'x' && slideRef && clipState) {
+        if (dx <= -SWIPE_THRESHOLD) {
+          if (!clipState.atEnd) slideRef.scrollClipBy(1)
+          else slideRef.snapClipNearest?.()
+          return
+        }
+        if (dx >= SWIPE_THRESHOLD) {
+          if (!clipState.atStart) slideRef.scrollClipBy(-1)
+          else slideRef.snapClipNearest?.()
+          return
+        }
+        slideRef.snapClipNearest?.()
+        return
+      }
+
       if (dy <= -SWIPE_THRESHOLD) {
         animateToIndex(indexRef.current + 1)
       } else if (dy >= SWIPE_THRESHOLD) {
@@ -183,7 +263,7 @@ export default function ExploreFeed() {
       el.removeEventListener('touchmove', onTouchMove)
       el.removeEventListener('touchend', onTouchEnd)
     }
-  }, [animateToIndex])
+  }, [animateToIndex, getActiveSlideRef])
 
   return (
     <div className="h-full min-h-0 bg-reel-bg">
@@ -197,8 +277,12 @@ export default function ExploreFeed() {
             className="box-border h-full min-h-full w-full shrink-0"
           >
             <ReelSlide
+              ref={(node) => {
+                if (node) slideRefs.current[reel.slideKey] = node
+                else delete slideRefs.current[reel.slideKey]
+              }}
               reel={reel}
-              isActive={reel.slideKey === activeSlideKey}
+              scrollRoot={scrollerRef}
               globalMuted={muted}
               onToggleMute={() => setMuted((m) => !m)}
             />

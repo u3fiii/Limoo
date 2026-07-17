@@ -43,8 +43,8 @@ export const products = [
     description:
       'پوستر A3 روی کاغذ مات ۳۰۰ گرم. ارسال لوله شده. طراحی اختصاصی استودیو.',
     images: [
-      'https://picsum.photos/seed/limoo-p2a/800/1000',
-      'https://picsum.photos/seed/limoo-p2b/800/1000',
+      'https://images.unsplash.com/photo-1513883049090-d0b7439799bf?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -55,8 +55,8 @@ export const products = [
     description:
       'چراغ رومیزی هوشمند Yeelight با نور قابل تنظیم، کنترل از اپ و سازگار با دستیار صوتی.',
     images: [
-      'https://picsum.photos/seed/limoo-yeelight/800/1000',
-      'https://picsum.photos/seed/limoo-yeelight-b/800/1000',
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -67,8 +67,8 @@ export const products = [
     description:
       'لامپ LED هوشمند شیائومی، میلیون‌ها رنگ، زمان‌بندی روشن/خاموش از طریق اپ.',
     images: [
-      'https://picsum.photos/seed/limoo-mi-bulb/800/1000',
-      'https://picsum.photos/seed/limoo-mi-bulb-b/800/1000',
+      'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -79,8 +79,8 @@ export const products = [
     description:
       'نوار نور RGB برای میز کار و پشت مانیتور. کنترل از موبایل، همگام با موسیقی.',
     images: [
-      'https://picsum.photos/seed/limoo-led-strip/800/1000',
-      'https://picsum.photos/seed/limoo-led-strip-b/800/1000',
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -91,8 +91,8 @@ export const products = [
     description:
       'موس بی‌سیم اپل با سطح چندلمسی. اتصال بلوتوث، شارژ با لایتنینگ. مناسب مک.',
     images: [
-      'https://picsum.photos/seed/limoo-magic-mouse/800/1000',
-      'https://picsum.photos/seed/limoo-magic-mouse-b/800/1000',
+      'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -103,8 +103,8 @@ export const products = [
     description:
       'کیبورد بی‌سیم اپل با طراحی جمع‌وجور. باتری قابل شارژ، سازگار با مک و آیپد.',
     images: [
-      'https://picsum.photos/seed/limoo-magic-keyboard/800/1000',
-      'https://picsum.photos/seed/limoo-magic-keyboard-b/800/1000',
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -115,8 +115,56 @@ export const products = [
     description:
       'مک‌بوک ایر با تراشه Apple Silicon. نمایشگر Liquid Retina، باتری تا ۱۸ ساعت.',
     images: [
-      'https://picsum.photos/seed/limoo-macbook/800/1000',
-      'https://picsum.photos/seed/limoo-macbook-b/800/1000',
+      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=1000&fit=crop',
+    ],
+  },
+  {
+    id: 'p4d',
+    sellerId: 's5',
+    name: 'گلکسی S25 Ultra',
+    price: 89900000,
+    description:
+      'پرچمدار سامسونگ با دوربین ۲۰۰ مگاپیکسل، قلم S Pen و تراشه Snapdragon.',
+    images: [
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&h=1000&fit=crop',
+    ],
+  },
+  {
+    id: 'p4e',
+    sellerId: 's5',
+    name: 'گلکسی Buds3 Pro',
+    price: 12500000,
+    description:
+      'ایرباد بی‌سیم سامسونگ با نویزکنسلینگ فعال و کیفیت صدای Hi-Fi.',
+    images: [
+      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&h=1000&fit=crop',
+    ],
+  },
+  {
+    id: 'p4f',
+    sellerId: 's6',
+    name: 'Huawei Mate XT',
+    price: 125000000,
+    description:
+      'اولین گوشی تاشو سه‌گانه جهان با طراحی نازک و صفحه‌نمایش OLED.',
+    images: [
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&h=1000&fit=crop',
+    ],
+  },
+  {
+    id: 'p4g',
+    sellerId: 's6',
+    name: 'Huawei Watch GT 5',
+    price: 18900000,
+    description:
+      'ساعت هوشمند با باتری دو هفته‌ای، GPS دقیق و مانیتورینگ سلامت.',
+    images: [
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -127,8 +175,8 @@ export const products = [
     description:
       'کیف خرید پارچه‌ای با چاپ دستی. مقاوم و قابل شستشو. سایز متوسط.',
     images: [
-      'https://picsum.photos/seed/limoo-p5a/800/1000',
-      'https://picsum.photos/seed/limoo-p5b/800/1000',
+      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&h=1000&fit=crop',
     ],
   },
   {
@@ -138,10 +186,30 @@ export const products = [
     price: 165000,
     description:
       'شمع سویا با رایحه وانیل، سوختن حدود ۴۰ ساعت. ظرف شیشه‌ای قابل استفاده مجدد.',
-    images: ['https://picsum.photos/seed/limoo-p6a/800/1000'],
+    images: [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=1000&fit=crop',
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&h=1000&fit=crop',
+    ],
   },
 ]
 
 export function getProductById(id) {
   return products.find((p) => p.id === id)
+}
+
+export function getProductsBySeller(sellerId) {
+  return products.filter((p) => p.sellerId === sellerId)
+}
+
+/** Normalize Unsplash URLs for reliable loading */
+export function productImageUrl(url, variant = 'detail') {
+  const [base] = url.split('?')
+  if (variant === 'thumb') {
+    return `${base}?auto=format&w=400&h=400&fit=crop&q=80`
+  }
+  return `${base}?auto=format&w=800&h=1000&fit=crop&q=80`
+}
+
+export function getProductImages(product) {
+  return product.images.map((url) => productImageUrl(url))
 }

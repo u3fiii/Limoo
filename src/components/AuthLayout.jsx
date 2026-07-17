@@ -47,7 +47,7 @@ export function AuthTextField({
       onChange={onChange}
       placeholder={placeholder}
       autoFocus={autoFocus}
-      className={`min-h-14 w-full rounded-btn bg-input px-4 text-base text-text outline-none placeholder:text-text-muted focus:ring-2 focus:ring-cta/15 ${className}`}
+      className={`min-h-14 w-full rounded-btn bg-input px-4 text-base text-text outline-none placeholder:text-text-muted ${className}`}
       {...rest}
     />
   )

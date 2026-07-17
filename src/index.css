@@ -95,6 +95,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Text inputs: 2px black border on focus (no layout shift) */
+input.bg-input:not(.limoo-input-plain),
+textarea {
+  border: 2px solid transparent;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not(.limoo-input-plain):focus,
+textarea:focus {
+  border: 2px solid var(--limoo-cta);
+  outline: none;
+  box-shadow: none;
+}
+
 /* Hide scrollbars inside the phone frame while keeping scroll */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -112,7 +125,39 @@ body {
   scroll-snap-align: center;
 }
 
-/* Floating nav icons — PNG/SVG with transparent bg; alpha drives the mask */
+/* Reel pause — soft scale-in for play control */
+@keyframes reel-play-in {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.reel-play-in {
+  animation: reel-play-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: center;
+}
+
+@keyframes nav-pill-in {
+  from {
+    opacity: 0.88;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nav-pill-in {
+  animation: nav-pill-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  transform-origin: center;
+}
+
 .nav-icon-mask {
   mask-size: contain;
   mask-repeat: no-repeat;

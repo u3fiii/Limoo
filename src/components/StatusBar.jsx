@@ -1,9 +1,20 @@
 /** iOS-style mock status bar */
+import { useLocation } from 'react-router-dom'
+
 export default function StatusBar() {
+  const { pathname } = useLocation()
+  const lightChrome =
+    pathname === '/search' ||
+    pathname === '/notifications' ||
+    pathname === '/chats' ||
+    pathname === '/profile'
+
   return (
     <div
       dir="ltr"
-      className="pointer-events-none absolute inset-x-0 top-0 z-50 flex h-[calc(2rem+env(safe-area-inset-top))] items-center bg-transparent px-4 pt-[env(safe-area-inset-top)] text-[0.6875rem] font-medium text-text-inverse"
+      className={`pointer-events-none absolute inset-x-0 top-0 z-50 flex h-[calc(2rem+env(safe-area-inset-top))] items-center bg-transparent px-4 pt-[env(safe-area-inset-top)] text-[0.6875rem] font-medium ${
+        lightChrome ? 'text-text' : 'text-text-inverse'
+      }`}
     >
       {/* Left: signal + carrier + wifi */}
       <div className="flex min-w-0 flex-1 items-center gap-1">

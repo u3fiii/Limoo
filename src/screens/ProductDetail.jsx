@@ -1,11 +1,42 @@
-import { useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useMemo, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import Avatar from '../components/Avatar'
-import { IconBack } from '../components/Icons'
-import { getProductById } from '../data/products'
-import { getSellerById } from '../data/sellers'
-import { formatPrice, toPersianDigits } from '../utils/format'
+import { IconBack, IconChevronStart, IconEye } from '../components/Icons'
 import { useChat } from '../context/ChatContext'
+import { getClipsForProduct, getClipsForSeller } from '../data/feed'
+import { getProductById, getProductImages } from '../data/products'
+import { getSellerById } from '../data/sellers'
+import { formatCompactCount, formatPrice, toPersianDigits } from '../utils/format'
+
+function VideoThumb({ clip }) {
+  return (
+    <button
+      type="button"
+      className="relative aspect-[3/4] w-[7.25rem] shrink-0 overflow-hidden rounded-card bg-surface-secondary"
+    >
+      <img
+        src={clip.poster}
+        alt=""
+        referrerPolicy="no-referrer"
+        className="absolute inset-0 size-full object-cover"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 flex items-center justify-center bg-black/15">
+        <span className="flex size-10 items-center justify-center rounded-full bg-surface/95 shadow-sm">
+          <svg className="ms-0.5 size-4 text-text" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+            <path d="M4 2.5v11l9-5.5-9-5.5Z" />
+          </svg>
+        </span>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent px-2 pb-2 pt-5">
+        <span className="flex items-center justify-end gap-1 text-[0.6875rem] font-medium text-text-inverse">
+          {formatCompactCount(clip.likes)} بازدید
+          <IconEye className="size-3.5 shrink-0" />
+        </span>
+      </div>
+    </button>
+  )
+}
 
 export default function ProductDetail() {
   const { productId } = useParams()
@@ -15,6 +46,18 @@ export default function ProductDetail() {
   const seller = product ? getSellerById(product.sellerId) : null
   const scrollerRef = useRef(null)
   const [activeIndex, setActiveIndex] = useState(0)
+
+  const images = useMemo(
+    () => (product ? getProductImages(product) : []),
+    [product],
+  )
+
+  const videos = useMemo(() => {
+    if (!product || !seller) return []
+    const forProduct = getClipsForProduct(product.id)
+    if (forProduct.length > 0) return forProduct
+    return getClipsForSeller(seller.id, 6)
+  }, [product, seller])
 
   if (!product || !seller) {
     return (
@@ -35,9 +78,8 @@ export default function ProductDetail() {
     const el = scrollerRef.current
     if (!el) return
     const index = Math.round(el.scrollLeft / el.clientWidth)
-    // RTL: scrollLeft can be negative in some browsers
     const normalized = Math.abs(index)
-    setActiveIndex(Math.min(normalized, product.images.length - 1))
+    setActiveIndex(Math.min(normalized, images.length - 1))
   }
 
   const startChat = () => {
@@ -65,18 +107,20 @@ export default function ProductDetail() {
             onScroll={onScroll}
             className="flex snap-x-mandatory overflow-x-auto no-scrollbar"
           >
-            {product.images.map((src, i) => (
+            {images.map((src, i) => (
               <img
                 key={src}
                 src={src}
                 alt={`${product.name} — ${toPersianDigits(i + 1)}`}
-                className="snap-center h-[420px] w-full shrink-0 object-cover"
+                referrerPolicy="no-referrer"
+                className="snap-center h-[420px] w-full shrink-0 object-cover bg-surface-secondary"
+                loading={i === 0 ? 'eager' : 'lazy'}
               />
             ))}
           </div>
-          {product.images.length > 1 && (
-            <div className="absolute bottom-3 inset-x-0 flex justify-center gap-1.5">
-              {product.images.map((_, i) => (
+          {images.length > 1 && (
+            <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
+              {images.map((_, i) => (
                 <span
                   key={i}
                   className={`h-1.5 rounded-pill transition-all ${
@@ -96,18 +140,33 @@ export default function ProductDetail() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 rounded-card border border-border bg-surface-secondary/60 p-3">
+          <Link
+            to={`/shop/${seller.id}`}
+            className="flex items-center gap-3 rounded-card border border-border bg-surface-secondary/60 p-3 transition active:bg-surface-secondary"
+          >
             <Avatar src={seller.avatar} alt={seller.name} size="md" />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-text">{seller.name}</p>
               <p className="truncate text-sm text-text-muted">@{seller.handle}</p>
             </div>
-          </div>
+            <IconChevronStart className="size-5 shrink-0 text-text-muted" aria-hidden />
+          </Link>
 
           <div>
             <h2 className="mb-1.5 text-sm font-semibold text-text">توضیحات</h2>
             <p className="text-sm leading-7 text-text-secondary">{product.description}</p>
           </div>
+
+          {videos.length > 0 ? (
+            <div>
+              <h2 className="mb-3 text-sm font-semibold text-text">ویدیوها</h2>
+              <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                {videos.map((clip) => (
+                  <VideoThumb key={clip.id} clip={clip} />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 

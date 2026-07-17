@@ -105,7 +105,7 @@ export default function OtpVerify() {
               onChange={(e) => updateAt(index, e.target.value)}
               onKeyDown={(e) => onKeyDown(index, e)}
               autoFocus={index === 0}
-              className="size-12 rounded-btn bg-input text-center text-xl font-bold text-text outline-none focus:ring-2 focus:ring-cta/15"
+              className="size-12 rounded-btn bg-input text-center text-xl font-bold text-text outline-none"
               aria-label={`رقم ${toPersianDigits(index + 1)}`}
             />
           ))}
