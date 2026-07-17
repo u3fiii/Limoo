@@ -6,14 +6,15 @@ export default function StatusBar() {
   const lightChrome =
     pathname === '/search' ||
     pathname === '/notifications' ||
-    pathname === '/chats' ||
+    pathname.startsWith('/chats') ||
+    pathname.startsWith('/sell') ||
     pathname === '/profile'
 
   return (
     <div
       dir="ltr"
-      className={`pointer-events-none absolute inset-x-0 top-0 z-50 flex h-[calc(2rem+env(safe-area-inset-top))] items-center bg-transparent px-4 pt-[env(safe-area-inset-top)] text-[0.6875rem] font-medium ${
-        lightChrome ? 'text-text' : 'text-text-inverse'
+      className={`pointer-events-none absolute inset-x-0 top-0 z-50 flex h-[calc(2rem+env(safe-area-inset-top))] items-center px-4 pt-[env(safe-area-inset-top)] text-[0.6875rem] font-medium ${
+        lightChrome ? 'bg-surface text-text' : 'bg-transparent text-text-inverse'
       }`}
     >
       {/* Left: signal + carrier + wifi */}

@@ -29,7 +29,7 @@ export default function ExploreFeed() {
   const clipTouchStartScroll = useRef(0)
   const touchSkipRef = useRef(false)
   const gestureAxisRef = useRef(null)
-  const [muted, setMuted] = useState(true)
+  const [muted, setMuted] = useState(false)
 
   const slides = useMemo(() => {
     if (reels.length === 0) return []
@@ -285,6 +285,7 @@ export default function ExploreFeed() {
               scrollRoot={scrollerRef}
               globalMuted={muted}
               onToggleMute={() => setMuted((m) => !m)}
+              onAutoplayMuted={() => setMuted(true)}
             />
           </div>
         ))}

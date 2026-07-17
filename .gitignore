@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Original reel videos (compressed copies live in public/videos)
+video-backup/

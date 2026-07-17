@@ -7,6 +7,7 @@ import { getClipsForProduct, getClipsForSeller } from '../data/feed'
 import { getProductById, getProductImages } from '../data/products'
 import { getSellerById } from '../data/sellers'
 import { formatCompactCount, formatPrice, toPersianDigits } from '../utils/format'
+import { posterForVideo } from '../utils/video'
 
 function VideoThumb({ clip }) {
   return (
@@ -15,7 +16,7 @@ function VideoThumb({ clip }) {
       className="relative aspect-[3/4] w-[7.25rem] shrink-0 overflow-hidden rounded-card bg-surface-secondary"
     >
       <img
-        src={clip.poster}
+        src={clip.poster ?? posterForVideo(clip.videoUrl)}
         alt=""
         referrerPolicy="no-referrer"
         className="absolute inset-0 size-full object-cover"

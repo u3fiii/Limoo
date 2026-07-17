@@ -5,18 +5,19 @@ import MessageBubble from '../components/MessageBubble'
 import PinnedBar from '../components/PinnedBar'
 import ProductCard from '../components/ProductCard'
 import QuickReplyChip from '../components/QuickReplyChip'
-import { IconAttach, IconBack, IconMore, IconSend } from '../components/Icons'
-import { quickReplies } from '../data/chats'
+import { IconAttach, IconBack, IconMore } from '../components/Icons'
+import sendIcon from '../assets/chat/send.png'
+import { quickReplies, getThreadContact } from '../data/chats'
 import { getProductById } from '../data/products'
-import { getSellerById } from '../data/sellers'
 import { useChat } from '../context/ChatContext'
 
 export default function ChatThread() {
   const { threadId } = useParams()
   const navigate = useNavigate()
-  const { getThreadById, sendText, sendProduct, peekPendingStage, clearPendingStage } = useChat()
+  const { getThreadById, sendText, sendProduct, peekPendingStage, clearPendingStage, markThreadRead } =
+    useChat()
   const thread = getThreadById(threadId)
-  const seller = thread ? getSellerById(thread.sellerId) : null
+  const contact = thread ? getThreadContact(thread) : null
 
   const [text, setText] = useState('')
   const [stageDismissed, setStageDismissed] = useState(false)
@@ -38,12 +39,16 @@ export default function ChatThread() {
   }, [threadId])
 
   useEffect(() => {
+    if (threadId) markThreadRead(threadId)
+  }, [threadId, markThreadRead])
+
+  useEffect(() => {
     const el = listRef.current
     if (!el) return
     el.scrollTop = el.scrollHeight
   }, [messages.length, stagedProductId])
 
-  if (!thread || !seller) {
+  if (!thread || !contact) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 bg-bg p-6">
         <p className="text-text-secondary">گفتگو پیدا نشد</p>
@@ -84,10 +89,12 @@ export default function ChatThread() {
         >
           <IconBack className="size-5" />
         </button>
-        <Avatar src={seller.avatar} alt={seller.name} size="sm" />
+        <Avatar src={contact.avatar} alt={contact.name} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-text">{seller.name}</p>
-          <p className="truncate text-xs text-text-muted">معمولاً سریع جواب می‌دهد</p>
+          <p className="truncate text-sm font-semibold text-text">{contact.name}</p>
+          <p className="truncate text-xs text-text-muted">
+            {contact.online ? 'آنلاین' : 'معمولاً سریع جواب می‌دهد'}
+          </p>
         </div>
         <button
           type="button"
@@ -161,11 +168,17 @@ export default function ChatThread() {
             <button
               type="button"
               onClick={() => handleSendText()}
-              disabled={!text.trim()}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition enabled:active:bg-primary-hover disabled:opacity-40"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition active:bg-primary-hover"
               aria-label="ارسال"
             >
-              <IconSend className="size-4" />
+              <span
+                aria-hidden
+                className="nav-icon-mask block size-4 shrink-0 -translate-x-0.5 bg-current"
+                style={{
+                  maskImage: `url(${sendIcon})`,
+                  WebkitMaskImage: `url(${sendIcon})`,
+                }}
+              />
             </button>
           </div>
         </div>

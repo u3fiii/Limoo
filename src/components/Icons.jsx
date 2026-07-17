@@ -395,3 +395,80 @@ export function IconVideoTab({ className = 'size-5' }) {
     </svg>
   )
 }
+
+export function IconSparkle({ className = 'size-5' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 3.5 13.4 9.6 19.5 11 13.4 12.4 12 18.5 10.6 12.4 4.5 11 10.6 9.6 12 3.5Z"
+        fill="currentColor"
+      />
+      <path
+        d="M18.5 4.5 19 6.5 21 7 19 7.5 18.5 9.5 18 7.5 16 7 18 6.5 18.5 4.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+export function IconUpload({ className = 'size-5' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 16V6M8.5 9.5 12 6l3.5 3.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 18h14"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export function IconPhotoAdd({ className = 'size-6' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="9" cy="10.5" r="1.5" fill="currentColor" />
+      <path
+        d="m6.5 16 3.5-3.5 2.5 2.5L14 12l3.5 4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17 7v4M15 9h4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+export function IconVideoAdd({ className = 'size-6' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="4" y="7" width="12" height="10" rx="2" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="M16 10.5 19 9v6l-3-1.5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 11v4M8 13h4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}

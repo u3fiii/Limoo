@@ -199,6 +199,12 @@ export function ChatProvider({ children }) {
     [appendMessages],
   )
 
+  const markThreadRead = useCallback((threadId) => {
+    setThreads((prev) =>
+      prev.map((t) => (t.id === threadId ? { ...t, unread: 0 } : t)),
+    )
+  }, [])
+
   const value = useMemo(
     () => ({
       threads,
@@ -210,6 +216,7 @@ export function ChatProvider({ children }) {
       clearPendingStage,
       sendText,
       sendProduct,
+      markThreadRead,
     }),
     [
       threads,
@@ -221,6 +228,7 @@ export function ChatProvider({ children }) {
       clearPendingStage,
       sendText,
       sendProduct,
+      markThreadRead,
     ],
   )
 

@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Avatar from './Avatar'
 import { IconPlus } from './Icons'
 import bookmarkIcon from '../assets/reel/bookmark.png'
@@ -11,6 +11,7 @@ import volumeIcon from '../assets/reel/volume.png'
 import { getProductById, productImageUrl } from '../data/products'
 import { getSellerById } from '../data/sellers'
 import { formatCompactCount, formatPrice } from '../utils/format'
+import { posterForVideo } from '../utils/video'
 
 const VIEWPORT_THRESHOLD = 0.75
 const CLIP_SNAP_MS = 160
@@ -47,7 +48,7 @@ function ActionButton({ children, label, onClick }) {
   )
 }
 
-function ClipVideo({ clip, isActive, globalMuted, paused }) {
+function ClipVideo({ clip, isActive, globalMuted, paused, onAutoplayMuted }) {
   const videoRef = useRef(null)
 
   useEffect(() => {
@@ -61,8 +62,6 @@ function ClipVideo({ clip, isActive, globalMuted, paused }) {
       return undefined
     }
 
-    video.muted = globalMuted
-
     if (video.getAttribute('src') !== clip.videoUrl) {
       video.src = clip.videoUrl
       video.load()
@@ -74,8 +73,15 @@ function ClipVideo({ clip, isActive, globalMuted, paused }) {
     }
 
     const tryPlay = () => {
-      const play = video.play()
-      if (play?.catch) play.catch(() => {})
+      video.muted = globalMuted
+      video
+        .play()
+        .catch(() => {
+          if (globalMuted) return
+          video.muted = true
+          video.play().catch(() => {})
+          onAutoplayMuted?.()
+        })
     }
 
     if (video.readyState >= 2) {
@@ -85,13 +91,13 @@ function ClipVideo({ clip, isActive, globalMuted, paused }) {
 
     video.addEventListener('canplay', tryPlay, { once: true })
     return () => video.removeEventListener('canplay', tryPlay)
-  }, [clip.videoUrl, globalMuted, isActive, paused])
+  }, [clip.videoUrl, globalMuted, isActive, paused, onAutoplayMuted])
 
   return (
     <video
       ref={videoRef}
       className="absolute inset-0 size-full object-cover"
-      poster={clip.poster}
+      poster={clip.poster ?? posterForVideo(clip.videoUrl)}
       playsInline
       loop
       muted={globalMuted}
@@ -102,7 +108,7 @@ function ClipVideo({ clip, isActive, globalMuted, paused }) {
 }
 
 const ReelSlide = forwardRef(function ReelSlide(
-  { reel, scrollRoot, globalMuted, onToggleMute },
+  { reel, scrollRoot, globalMuted, onToggleMute, onAutoplayMuted },
   ref,
 ) {
   const sectionRef = useRef(null)
@@ -114,6 +120,7 @@ const ReelSlide = forwardRef(function ReelSlide(
   const [savedByClip, setSavedByClip] = useState({})
   const [followingByClip, setFollowingByClip] = useState({})
   const [paused, setPaused] = useState(false)
+  const navigate = useNavigate()
 
   const clips = reel.clips?.length
     ? reel.clips
@@ -122,7 +129,6 @@ const ReelSlide = forwardRef(function ReelSlide(
         sellerId: reel.sellerId,
         likes: reel.likes ?? 0,
         videoUrl: reel.videoUrl,
-        poster: reel.poster,
         productIds: reel.productIds ?? [],
       }]
 
@@ -254,6 +260,7 @@ const ReelSlide = forwardRef(function ReelSlide(
               isActive={inViewport && clipIndex === i}
               globalMuted={globalMuted}
               paused={paused}
+              onAutoplayMuted={onAutoplayMuted}
             />
           </div>
         ))}
@@ -312,8 +319,9 @@ const ReelSlide = forwardRef(function ReelSlide(
 
         <button
           type="button"
+          onClick={() => navigate('/sell', { state: { from: '/' } })}
           className="pointer-events-auto flex size-11 shrink-0 items-center justify-center rounded-full bg-glass text-text-inverse backdrop-blur-md"
-          aria-label="افزودن"
+          aria-label="ثبت آگهی"
         >
           <IconPlus className="size-5" />
         </button>

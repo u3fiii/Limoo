@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Avatar from '../components/Avatar'
 import {
   IconBasket,
@@ -54,6 +55,7 @@ function tabIcon(tabId, active) {
 }
 
 export default function Profile() {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('videos')
 
   const gridItems = useMemo(
@@ -112,9 +114,10 @@ export default function Profile() {
         <div className="mt-4 flex gap-2 px-4">
           <button
             type="button"
-            className="min-h-10 flex-1 rounded-sm bg-input px-3 text-sm font-semibold text-text transition active:opacity-80"
+            onClick={() => navigate('/sell', { state: { from: '/profile' } })}
+            className="min-h-10 flex-1 rounded-sm bg-primary px-3 text-sm font-semibold text-primary-foreground transition active:bg-primary-hover"
           >
-            ویرایش اطلاعات
+            ثبت آگهی
           </button>
           <button
             type="button"
