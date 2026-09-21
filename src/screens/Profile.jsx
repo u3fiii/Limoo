@@ -64,7 +64,7 @@ export default function Profile() {
   )
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="flex shrink-0 items-center gap-2 px-4 pb-2 pt-1">
         <button
           type="button"

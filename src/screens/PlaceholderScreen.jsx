@@ -1,6 +1,6 @@
 export default function PlaceholderScreen({ title, subtitle }) {
   return (
-    <div className="flex h-full min-h-0 flex-col bg-bg pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-bg pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="shrink-0 border-b border-border bg-surface px-4 pb-3 pt-1">
         <h1 className="text-xl font-bold text-text">{title}</h1>
         {subtitle && <p className="text-sm text-text-muted">{subtitle}</p>}

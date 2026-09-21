@@ -79,7 +79,7 @@ export default function ChatThread() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-bg pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-bg pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="flex shrink-0 items-center gap-2 border-b border-border bg-surface px-2 py-2">
         <button
           type="button"

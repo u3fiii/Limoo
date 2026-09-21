@@ -1,11 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Avatar from './Avatar'
-import { IconPlus } from './Icons'
+import { IconCheck, IconChevronStart, IconComment, IconFlag, IconStore } from './Icons'
+import inoLogo from '../assets/ino-logo.png'
 import bookmarkIcon from '../assets/reel/bookmark.png'
+import bookmarkFilledIcon from '../assets/reel/bookmark-filled.png'
 import likeIcon from '../assets/reel/like.png'
+import likeFilledIcon from '../assets/reel/like-filled.png'
 import muteIcon from '../assets/reel/mute.png'
-import playIcon from '../assets/reel/play.png'
 import shareIcon from '../assets/reel/share.png'
 import volumeIcon from '../assets/reel/volume.png'
 import { getProductById, productImageUrl } from '../data/products'
@@ -15,6 +17,8 @@ import { posterForVideo } from '../utils/video'
 
 const VIEWPORT_THRESHOLD = 0.75
 const CLIP_SNAP_MS = 160
+const HOLD_TO_PAUSE_MS = 220
+const TAP_MOVE_TOLERANCE_PX = 10
 
 function easeOutCubic(t) {
   return 1 - (1 - t) ** 3
@@ -24,26 +28,27 @@ function ActionIcon({ src, className = '' }) {
   return (
     <span
       aria-hidden
-      className={`nav-icon-mask block size-5 shrink-0 bg-current ${className}`}
+      className={`nav-icon-mask block size-7 shrink-0 bg-current ${className}`}
       style={{
-        maskImage: `url(${src})`,
-        WebkitMaskImage: `url(${src})`,
+        maskImage: `url("${src}")`,
+        WebkitMaskImage: `url("${src}")`,
       }}
     />
   )
 }
 
-function ActionButton({ children, label, onClick }) {
+function ActionButton({ children, label, count, onClick }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex flex-col items-center gap-1 text-text-inverse"
+      className={`flex w-12 flex-col items-center justify-center gap-1 rounded-pill bg-black/20 text-text-inverse backdrop-blur-md transition active:scale-95 ${
+        count == null ? 'h-12' : 'pt-2.5 pb-2'
+      }`}
       aria-label={label}
     >
-      <span className="flex size-11 items-center justify-center rounded-full bg-glass backdrop-blur-md">
-        {children}
-      </span>
+      {children}
+      {count != null && <span className="text-xs font-medium leading-none">{count}</span>}
     </button>
   )
 }
@@ -117,9 +122,14 @@ const ReelSlide = forwardRef(function ReelSlide(
   const [inViewport, setInViewport] = useState(false)
   const [clipIndex, setClipIndex] = useState(0)
   const [likedByClip, setLikedByClip] = useState({})
+  const [likePopClipId, setLikePopClipId] = useState(null)
   const [savedByClip, setSavedByClip] = useState({})
   const [followingByClip, setFollowingByClip] = useState({})
   const [paused, setPaused] = useState(false)
+  const [muteFlash, setMuteFlash] = useState(null)
+  const holdTimerRef = useRef(null)
+  const pressStartRef = useRef(null)
+  const suppressTapRef = useRef(false)
   const navigate = useNavigate()
 
   const clips = reel.clips?.length
@@ -235,15 +245,55 @@ const ReelSlide = forwardRef(function ReelSlide(
     }
   }, [inViewport])
 
-  const togglePlayback = () => {
+  useEffect(() => () => window.clearTimeout(holdTimerRef.current), [])
+
+  // Tap toggles sound; pressing and holding pauses until release.
+  const clearHoldTimer = () => {
+    window.clearTimeout(holdTimerRef.current)
+    holdTimerRef.current = null
+  }
+
+  const onPressStart = (e) => {
+    if (!inViewport || (e.pointerType === 'mouse' && e.button !== 0)) return
+    suppressTapRef.current = false
+    pressStartRef.current = { x: e.clientX, y: e.clientY }
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    clearHoldTimer()
+    holdTimerRef.current = window.setTimeout(() => {
+      holdTimerRef.current = null
+      suppressTapRef.current = true
+      setPaused(true)
+    }, HOLD_TO_PAUSE_MS)
+  }
+
+  const onPressMove = (e) => {
+    const start = pressStartRef.current
+    if (!start || suppressTapRef.current) return
+    if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > TAP_MOVE_TOLERANCE_PX) {
+      clearHoldTimer()
+      suppressTapRef.current = true
+    }
+  }
+
+  const onPressEnd = () => {
+    clearHoldTimer()
+    pressStartRef.current = null
+    setPaused(false)
+  }
+
+  const onTap = () => {
+    if (suppressTapRef.current) {
+      suppressTapRef.current = false
+      return
+    }
     if (!inViewport) return
-    setPaused((p) => !p)
+    setMuteFlash({ key: Date.now(), muted: !globalMuted })
+    onToggleMute?.()
   }
 
   if (!seller || !activeClip) return null
 
   const likeCount = isLiked ? activeClip.likes + 1 : activeClip.likes
-  const showPauseOverlay = paused && inViewport
 
   return (
     <section ref={sectionRef} className="relative h-full w-full overflow-hidden bg-reel-bg">
@@ -268,38 +318,71 @@ const ReelSlide = forwardRef(function ReelSlide(
 
       <button
         type="button"
-        className="absolute inset-0 z-10"
-        onClick={togglePlayback}
-        aria-label={paused ? 'Play' : 'Pause'}
+        className="reel-tap-surface absolute inset-0 z-10"
+        onClick={onTap}
+        onPointerDown={onPressStart}
+        onPointerMove={onPressMove}
+        onPointerUp={onPressEnd}
+        onPointerCancel={onPressEnd}
+        onContextMenu={(e) => e.preventDefault()}
+        aria-label={globalMuted ? 'وصل صدا' : 'قطع صدا'}
       />
 
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[11] h-[100%] bg-gradient-to-t from-reel-scrim to-transparent"
-      />
-
-      {showPauseOverlay && (
-        <button
-          type="button"
-          onClick={togglePlayback}
-          className="absolute inset-0 z-20 flex items-center justify-center"
-          aria-label="Play"
-        >
-          <span className="reel-play-in flex size-14 items-center justify-center rounded-full bg-overlay drop-shadow-lg transition-transform duration-150 active:scale-95">
+      {muteFlash && (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+          <span
+            key={muteFlash.key}
+            onAnimationEnd={() => setMuteFlash(null)}
+            className="reel-mute-flash flex size-14 items-center justify-center rounded-full bg-overlay drop-shadow-lg"
+          >
             <span
               aria-hidden
-              className="nav-icon-mask block size-7 shrink-0 bg-text-inverse ms-0.5"
+              className="nav-icon-mask block size-7 shrink-0 bg-text-inverse"
               style={{
-                maskImage: `url(${playIcon})`,
-                WebkitMaskImage: `url(${playIcon})`,
+                maskImage: `url(${muteFlash.muted ? muteIcon : volumeIcon})`,
+                WebkitMaskImage: `url(${muteFlash.muted ? muteIcon : volumeIcon})`,
               }}
             />
           </span>
-        </button>
+        </div>
       )}
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center justify-between px-4 pt-[calc(2rem+env(safe-area-inset-top)+0.25rem)]">
-        <span className="size-11 shrink-0" aria-hidden />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[calc(7rem+env(safe-area-inset-top))] bg-linear-to-b from-black/60 via-black/25 to-transparent"
+      />
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex flex-row-reverse items-center justify-between px-4 pt-[calc(1rem+env(safe-area-inset-top))]">
+        <div className="pointer-events-auto flex flex-row-reverse min-w-0 items-center gap-2">
+          <Avatar
+            src={seller.avatar}
+            alt={seller.name}
+            size="sm"
+            className="ring-2 ring-white/80"
+          />
+          <div className="flex min-w-0 max-w-[9rem] flex-col items-end text-left">
+            <p className="max-w-full truncate text-sm font-bold text-text-inverse drop-shadow">@{seller.handle}</p>
+            <button
+              type="button"
+              onClick={() =>
+                setFollowingByClip((prev) => ({ ...prev, [activeClip.id]: !prev[activeClip.id] }))
+              }
+              className={`mt-1 flex items-center gap-1 rounded-pill py-0.5 text-xs transition-colors ${
+                isFollowing
+                  ? 'bg-surface ps-0.5 pe-2 font-bold text-text'
+                  : 'bg-glass px-2 font-medium text-text-inverse backdrop-blur-md'
+              }`}
+              aria-pressed={isFollowing}
+            >
+              {isFollowing && (
+                <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-text text-text-inverse">
+                  <IconCheck className="size-2.5" />
+                </span>
+              )}
+              {isFollowing ? 'دنبال شده' : 'دنبال کردن'}
+            </button>
+          </div>
+        </div>
 
         {clips.length > 1 ? (
           <div className="pointer-events-auto absolute inset-x-0 flex flex-row-reverse items-center justify-center gap-1.5">
@@ -320,10 +403,10 @@ const ReelSlide = forwardRef(function ReelSlide(
         <button
           type="button"
           onClick={() => navigate('/sell', { state: { from: '/' } })}
-          className="pointer-events-auto flex size-11 shrink-0 items-center justify-center rounded-full bg-glass text-text-inverse backdrop-blur-md"
+          className="pointer-events-auto flex h-11 shrink-0 items-center justify-center drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]"
           aria-label="ثبت آگهی"
         >
-          <IconPlus className="size-5" />
+          <img src={inoLogo} alt="" aria-hidden className="h-8 w-auto" />
         </button>
       </div>
 
@@ -331,20 +414,30 @@ const ReelSlide = forwardRef(function ReelSlide(
         key={activeClip.id}
         className="absolute bottom-44 start-4 z-30 flex flex-col items-start gap-4 md:bottom-40"
       >
-        <div className="flex w-11 flex-col items-center gap-4">
-          <div className="flex flex-col items-center gap-1">
-            <ActionButton
-              label="لایک"
-              onClick={() =>
-                setLikedByClip((prev) => ({ ...prev, [activeClip.id]: !prev[activeClip.id] }))
-              }
+        <div className="flex w-12 flex-col items-center gap-3">
+          <ActionButton
+            label="لایک"
+            count={formatCompactCount(likeCount)}
+            onClick={() => {
+              setLikePopClipId(isLiked ? null : activeClip.id)
+              setLikedByClip((prev) => ({ ...prev, [activeClip.id]: !prev[activeClip.id] }))
+            }}
+          >
+            <span
+              className={`block ${isLiked && likePopClipId === activeClip.id ? 'reel-like-pop' : ''}`}
+              onAnimationEnd={() => setLikePopClipId(null)}
             >
-              <ActionIcon src={likeIcon} className={isLiked ? 'text-like' : ''} />
-            </ActionButton>
-            <span className="text-xs font-medium text-text-inverse drop-shadow">
-              {formatCompactCount(likeCount)}
+              <ActionIcon src={isLiked ? likeFilledIcon : likeIcon} className={isLiked ? 'text-like' : ''} />
             </span>
-          </div>
+          </ActionButton>
+
+          <ActionButton label="نظرات" count={formatCompactCount(activeClip.comments ?? 0)}>
+            <IconComment className="size-7 shrink-0" />
+          </ActionButton>
+
+          <ActionButton label="اشتراک‌گذاری">
+            <ActionIcon src={shareIcon} />
+          </ActionButton>
 
           <ActionButton
             label="ذخیره"
@@ -352,42 +445,14 @@ const ReelSlide = forwardRef(function ReelSlide(
               setSavedByClip((prev) => ({ ...prev, [activeClip.id]: !prev[activeClip.id] }))
             }
           >
-            <ActionIcon src={bookmarkIcon} className={isSaved ? 'text-primary' : ''} />
+            <ActionIcon src={isSaved ? bookmarkFilledIcon : bookmarkIcon} />
           </ActionButton>
 
-          <ActionButton label="اشتراک‌گذاری">
-            <ActionIcon src={shareIcon} />
-          </ActionButton>
-
-          <ActionButton label={globalMuted ? 'صدا روشن' : 'بی‌صدا'} onClick={onToggleMute}>
-            {globalMuted ? <ActionIcon src={muteIcon} /> : <ActionIcon src={volumeIcon} />}
+          <ActionButton label="گزارش">
+            <IconFlag className="size-7 shrink-0" />
           </ActionButton>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <div className="relative flex w-11 shrink-0 justify-center">
-            <Avatar
-              src={seller.avatar}
-              alt={seller.name}
-              size="md"
-              className="ring-2 ring-white/80"
-            />
-            <button
-              type="button"
-              onClick={() =>
-                setFollowingByClip((prev) => ({ ...prev, [activeClip.id]: true }))
-              }
-              className="absolute -bottom-1 left-[calc(50%-8px)] flex size-5 -translate-x-1/2 items-center justify-center rounded-full bg-primary text-primary-foreground"
-              aria-label={isFollowing ? 'دنبال می‌کنی' : 'دنبال کردن'}
-            >
-              <IconPlus className="size-3.5" />
-            </button>
-          </div>
-          <div className="min-w-0 max-w-[9.5rem]">
-            <p className="truncate text-sm font-bold text-text-inverse drop-shadow">{seller.name}</p>
-            <p className="mt-0.5 truncate text-xs text-text-inverse/80 drop-shadow">@{seller.handle}</p>
-          </div>
-        </div>
       </div>
 
       <div key={`${activeClip.id}-products`} className="absolute inset-x-0 bottom-[5.25rem] z-30 md:bottom-[5rem]">
@@ -395,26 +460,36 @@ const ReelSlide = forwardRef(function ReelSlide(
           data-reel-pan
           className="flex gap-2.5 overflow-x-auto no-scrollbar px-4"
         >
-          {products.map((product) => (
-            <Link
-              key={product.id}
-              to={`/product/${product.id}`}
-              className="flex min-w-[210px] max-w-[240px] shrink-0 items-center gap-2.5 rounded-card bg-glass-strong p-2 backdrop-blur-md transition active:scale-[0.98]"
-            >
-              <img
-                src={productImageUrl(product.images[0], 'thumb')}
-                alt={product.name}
-                referrerPolicy="no-referrer"
-                className="size-12 shrink-0 rounded-md object-cover bg-surface-secondary"
-              />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-text-inverse">{product.name}</p>
-                <p className="mt-1 truncate text-[0.6875rem] font-normal text-text-inverse/70">
-                  {formatPrice(product.price)}
-                </p>
-              </div>
-            </Link>
-          ))}
+          {products.map((product) => {
+            const productSeller = getSellerById(product.sellerId) ?? seller
+            return (
+              <Link
+                key={product.id}
+                to={`/product/${product.id}`}
+                className={`flex items-center gap-2 rounded-md border border-border bg-surface p-1.5 pe-1 shadow-md transition active:scale-[0.98] ${
+                  products.length === 1 ? 'min-w-0 flex-1' : 'min-w-[200px] max-w-[230px] shrink-0'
+                }`}
+              >
+                <img
+                  src={productImageUrl(product.images[0], 'thumb')}
+                  alt={product.name}
+                  referrerPolicy="no-referrer"
+                  className="size-12 shrink-0 rounded-sm object-cover bg-surface-secondary"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-bold text-text">{product.name}</p>
+                  <p className="mt-0.5 truncate text-[0.6875rem] font-bold text-text">
+                    {formatPrice(product.price)}
+                  </p>
+                  <p className="mt-0.5 flex items-center gap-1 text-[0.625rem] text-text-secondary">
+                    <IconStore className="size-3 shrink-0" />
+                    <span className="truncate">{productSeller?.name}</span>
+                  </p>
+                </div>
+                <IconChevronStart className="size-4 shrink-0 text-text-secondary" />
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

@@ -1,5 +1,3 @@
-import StatusBar from './StatusBar'
-
 export default function PhoneFrame({ children }) {
   return (
     <div className="flex min-h-dvh items-stretch justify-center bg-bg md:min-h-full md:items-center md:bg-frame-bg md:p-8">
@@ -15,7 +13,6 @@ export default function PhoneFrame({ children }) {
           lang="fa"
           className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-bg font-sans text-text md:rounded-[1.4rem]"
         >
-          <StatusBar />
           <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         </div>
       </div>

@@ -63,7 +63,7 @@ export default function ChatList() {
   )
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="shrink-0 px-4 pb-3 pt-1">
         <h1 className="text-xl font-bold text-text">پیام‌ها</h1>
 

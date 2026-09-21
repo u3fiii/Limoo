@@ -90,7 +90,7 @@ export default function ProductDetail() {
 
   return (
     <div className="relative flex h-full min-h-0 flex-col bg-surface">
-      <header className="absolute inset-x-0 top-[calc(2rem+env(safe-area-inset-top))] z-20 flex items-center justify-between px-2">
+      <header className="absolute inset-x-0 top-[calc(0.75rem+env(safe-area-inset-top))] z-20 flex items-center justify-between px-2">
         <button
           type="button"
           onClick={() => navigate(-1)}

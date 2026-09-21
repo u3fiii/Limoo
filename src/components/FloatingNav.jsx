@@ -30,7 +30,7 @@ function NavIcon({ src, className = '' }) {
   )
 }
 
-/** Glass floating pill nav — selected tab is a wider lime pill */
+/** Glass floating pill nav — selected tab is a wider black pill */
 export default function FloatingNav() {
   const { pathname } = useLocation()
   const immersive = pathname === '/'
@@ -54,7 +54,7 @@ export default function FloatingNav() {
               className={({ isActive }) =>
                 `relative flex h-11 w-full items-center justify-center rounded-pill ${
                   isActive
-                    ? 'text-primary-foreground'
+                    ? 'text-cta-foreground'
                     : `transition-colors duration-200 ${
                         immersive
                           ? 'text-nav-float-icon active:bg-white/10'
@@ -68,7 +68,7 @@ export default function FloatingNav() {
                   {isActive ? (
                     <span
                       aria-hidden
-                      className="nav-pill-in absolute inset-0 rounded-pill bg-primary"
+                      className="nav-pill-in absolute inset-0 rounded-pill bg-cta"
                     />
                   ) : null}
                   <span className="relative z-10">

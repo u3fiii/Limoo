@@ -32,7 +32,7 @@ export default function ExploreSearch() {
   const posts = useMemo(() => filterExplorePosts(query), [query])
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="flex h-full min-h-0 flex-col bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="shrink-0 px-4 pb-3 pt-1">
         <label className="relative flex items-center">
           <span className="pointer-events-none absolute start-4 text-text-muted">

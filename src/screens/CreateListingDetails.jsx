@@ -34,7 +34,7 @@ export default function CreateListingDetails() {
   const canContinue = draft.title.trim().length > 0
 
   return (
-    <div className="relative flex h-full min-h-0 flex-col bg-surface pt-[calc(2rem+env(safe-area-inset-top))]">
+    <div className="relative flex h-full min-h-0 flex-col bg-surface pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <header className="flex shrink-0 items-center gap-2 px-2 pb-3">
         <button
           type="button"

@@ -4,7 +4,7 @@ import LimooLogo from './LimooLogo'
 export default function AuthLayout({ children, footer }) {
   return (
     <div className="flex h-full min-h-0 flex-col bg-primary">
-      <div className="flex shrink-0 flex-col items-center justify-center px-6 pb-8 pt-[calc(2.75rem+env(safe-area-inset-top))]">
+      <div className="flex shrink-0 flex-col items-center justify-center px-6 pb-8 pt-[calc(1.5rem+env(safe-area-inset-top))]">
         <LimooLogo />
       </div>
 

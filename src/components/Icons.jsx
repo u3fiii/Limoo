@@ -472,3 +472,48 @@ export function IconVideoAdd({ className = 'size-6' }) {
     </svg>
   )
 }
+
+export function IconStore({ className = 'size-4' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M4 9.5 5.2 4h13.6L20 9.5M4 9.5a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M5.5 12v8h13v-8M10 20v-5h4v5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function IconComment({ className = 'size-6' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 3.5c4.97 0 9 3.36 9 7.75s-4.03 7.75-9 7.75c-.9 0-1.77-.11-2.59-.32L5 20.5l.66-3.4C4.02 15.7 3 13.59 3 11.25 3 6.86 7.03 3.5 12 3.5Z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="8.5" cy="11.25" r=".9" fill="currentColor" />
+      <circle cx="12" cy="11.25" r=".9" fill="currentColor" />
+      <circle cx="15.5" cy="11.25" r=".9" fill="currentColor" />
+    </svg>
+  )
+}
+
+export function IconFlag({ className = 'size-6' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M6 21V4M6 4h12l-3.2 4.5L18 13H6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
